@@ -1,0 +1,16 @@
+﻿<Window x:Class="TOP.UI.WPF.UI.Windows.Reservation.ReservationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TOP.UI.WPF.UI.Windows.Reservation"
+        mc:Ignorable="d"
+        Height="134" Width="334" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" WindowStyle="None">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <DatePicker Name="ReservationEndDate" Margin="5"/>
+            <Button x:Name="btnOk" Content="Ok" Margin="5" Click="btnOk_Click"/>
+        </StackPanel>
+        
+    </Grid>
+</Window>
