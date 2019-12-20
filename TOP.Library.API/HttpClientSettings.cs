@@ -13,7 +13,6 @@ namespace TOP.Library.API
         };
         public HttpClientSettings()
         {
-            client.BaseAddress = new Uri(Url.TOP_API_Address);
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
         }
