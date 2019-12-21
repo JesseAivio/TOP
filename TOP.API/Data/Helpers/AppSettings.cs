@@ -8,5 +8,6 @@ namespace TOP.API.Data.Helpers
     public class AppSettings
     {
         public string Secret { get; set; }
+        public static bool isAzure = false;
     }
 }

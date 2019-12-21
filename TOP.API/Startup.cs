@@ -33,7 +33,10 @@ namespace TOP.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TOPContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:TOPDB"]));
+            if(AppSettings.isAzure == false)
+            {
+                services.AddDbContext<TOPContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:TOPDB"]));
+            }
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IModelService<Address>, AddressService>();
             services.AddScoped<IModelService<Company>, CompanyService>();
@@ -75,7 +78,10 @@ namespace TOP.API
             {
                 app.UseDeveloperExceptionPage();
             }
-            UpdateDatabase(app);
+            if(AppSettings.isAzure == false)
+            {
+                UpdateDatabase(app);
+            }
             app.UseHttpsRedirection();
 
             app.UseRouting();

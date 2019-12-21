@@ -35,7 +35,7 @@
         <StackPanel Margin="310,50,0,50">
             <TextBlock Text="TOP" Foreground="White" HorizontalAlignment="Center" FontSize="48" FontFamily="Champagne &amp; Limousines" FontWeight="Bold"/>
             <TextBlock Text="Testing" Foreground="White" HorizontalAlignment="Center" Width="280" FontSize="24" FontFamily="Champagne &amp; Limousines" TextWrapping="Wrap" TextAlignment="Center" Margin="0,50,0,0"/>
-            <TextBlock Text="For student's and teacher's" Foreground="White" FontSize="18" FontFamily="Champagne &amp; Limousines" TextWrapping="Wrap" TextAlignment="Right" Margin="10"/>
+            <TextBlock Text="Testing" Foreground="White" FontSize="18" FontFamily="Champagne &amp; Limousines" TextWrapping="Wrap" TextAlignment="Right" Margin="10"/>
         </StackPanel>
     </Grid>
 </Window>

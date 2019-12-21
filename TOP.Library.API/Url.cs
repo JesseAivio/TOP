@@ -8,6 +8,8 @@ namespace TOP.Library.API
     {
         public const string TOP_API_Address = "https://localhost:44346/api/";
 
+        public const string TOP_API_Address_Azure = "https://topapi.azurewebsites.net/api/";
+
         public const string Controller_Auth = "Auth";
 
         public const string Controller_TOP = "TOP";
