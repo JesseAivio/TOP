@@ -65,29 +65,6 @@ namespace TOP.API.Service
             SecurityTokenHandler tokenHandler = null;
             byte[] key = null;
             SecurityTokenDescriptor tokenDescriptor = null;
-            if (AppSettings.isAzure)
-            {
-                account = _accounts.FirstOrDefault(x => x.Username == username);
-                if (account == null || VerifyHash(password, Convert.FromBase64String(account.Salt), Convert.FromBase64String(account.Password)) == false)
-                    return null;
-
-                tokenHandler = new JwtSecurityTokenHandler();
-                key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-                tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                    new Claim(ClaimTypes.Name, account.Id.ToString()),
-                    new Claim(ClaimTypes.Role, account.Role)
-                    }),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-                token = tokenHandler.CreateToken(tokenDescriptor);
-                account.Token = tokenHandler.WriteToken(token);
-
-                return account.WithoutPassword();
-            }
 
             account = _topContext.Accounts.FirstOrDefault(x => x.Username == username);
             if (account == null || VerifyHash(password, Convert.FromBase64String(account.Salt), Convert.FromBase64String(account.Password)) == false)
@@ -116,27 +93,6 @@ namespace TOP.API.Service
             Account account = new Account();
             byte[] salt = null;
             byte[] password = null;
-            if (AppSettings.isAzure)
-            {
-                account = _accounts.FirstOrDefault(x => x.Username == accountParam.Username);
-
-                if (account != null)
-                    return false;
-
-                salt = CreateSalt();
-                password = HashPassword(accountParam.Password, salt);
-                account = new Account
-                {
-                    Id = Guid.NewGuid(),
-                    Username = accountParam.Username,
-                    Salt = Convert.ToBase64String(salt),
-                    Password = Convert.ToBase64String(password),
-                    Role = accountParam.Role
-                };
-
-                _accounts.Add(account);
-                return true;
-            }
 
             account = _topContext.Accounts.FirstOrDefault(x => x.Username == accountParam.Username);
 
@@ -161,12 +117,6 @@ namespace TOP.API.Service
         public Account GetAccount(Guid accountId)
         {
             Account account = new Account();
-            if (AppSettings.isAzure)
-            {
-                account = _accounts.FirstOrDefault(x => x.Id == accountId);
-
-                return account.WithoutPassword();
-            }
             account = _topContext.Accounts.FirstOrDefault(x => x.Id == accountId);
 
             return account.WithoutPassword();
@@ -174,21 +124,12 @@ namespace TOP.API.Service
 
         public IEnumerable<Account> GetAccounts()
         {
-            if (AppSettings.isAzure)
-            {
-                return _accounts.ToList().WithoutPasswords();
-            }
             return _topContext.Accounts.ToList().WithoutPasswords();
         }
 
         public void DeleteAccount(string username)
         {
             Account account = new Account();
-            if (AppSettings.isAzure)
-            {
-                account = _accounts.FirstOrDefault(x => x.Username == username);
-                _accounts.Remove(account);
-            }
             account = _topContext.Accounts.FirstOrDefault(x => x.Username == username);
             _topContext.Accounts.Remove(account);
             _topContext.SaveChanges();
@@ -197,24 +138,6 @@ namespace TOP.API.Service
         public void UpdateAccount(Account account)
         {
             Account dbAccount = new Account();
-            if (AppSettings.isAzure)
-            {
-                dbAccount = _accounts.FirstOrDefault(x => x.Id == account.Id);
-                if (account.Password != "")
-                {
-                    if (VerifyHash(account.Password, Convert.FromBase64String(dbAccount.Salt), Convert.FromBase64String(dbAccount.Password)) == false)
-                    {
-                        var salt = CreateSalt();
-                        var password = HashPassword(account.Password, salt);
-                        dbAccount.Password = Convert.ToBase64String(password);
-                        dbAccount.Salt = Convert.ToBase64String(salt);
-                    }
-                }
-                if (_accounts.FirstOrDefault(x => x.Username == account.Username) == null)
-                    dbAccount.Username = account.Username;
-
-                dbAccount.Role = account.Role;
-            }
 
             dbAccount = _topContext.Accounts.FirstOrDefault(x => x.Id == account.Id);
             if(account.Password != "")
@@ -257,12 +180,8 @@ namespace TOP.API.Service
                 Salt = salt,
                 DegreeOfParallelism = 8, // four cores
                 Iterations = 4,
-                MemorySize = 1024 * 1024 // 1 GB
+                MemorySize = 100 * 100 // 1024
             };
-            if (AppSettings.isAzure)
-            {
-                argon2.MemorySize = 100 * 100;
-            }
             return argon2.GetBytes(16);
         }
         #endregion
